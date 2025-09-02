@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Interop;
 using Microsoft.Win32;
 
+using HashPad.Models;
+
 using static HashPad.Views.WindowHelper;
 
 namespace HashPad.Views;
@@ -86,7 +88,7 @@ internal static class WindowPainter
 
 	public static bool SetWindowCorners(Window window, CornerPreference corner)
 	{
-		if (Environment.OSVersion.Version < new Version(10, 0, 22000) /* Windows 11 */)
+		if (!OsVersion.Is11OrGreater)
 			return false;
 
 		var windowHandle = new WindowInteropHelper(window).Handle;
@@ -113,7 +115,7 @@ internal static class WindowPainter
 
 	public static bool SetMicaBackground(Window window)
 	{
-		if (Environment.OSVersion.Version < new Version(10, 0, 22621) /* Windows 11 22621 */)
+		if (!OsVersion.Is11Build22621OrGreater)
 			return false;
 
 		var windowHandle = new WindowInteropHelper(window).Handle;

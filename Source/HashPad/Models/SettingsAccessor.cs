@@ -16,7 +16,7 @@ internal static class SettingsAccessor
 {
 	private static IPropertySet Values => ApplicationData.Current.LocalSettings.Values;
 
-	private static readonly object _lock = new object();
+	private static readonly object _lock = new();
 
 	public static T GetValue<T>(in string propertyName)
 	{

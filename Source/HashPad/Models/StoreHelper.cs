@@ -43,8 +43,7 @@ internal static class StoreHelper
 	/// <returns>True if successfully finished downloading and installing</returns>
 	public static async Task<bool> ProceedUpdateAsync(Window window)
 	{
-		if (window is null)
-			throw new ArgumentNullException(nameof(window));
+		ArgumentNullException.ThrowIfNull(window);
 
 		if (!PlatformInfo.IsPackaged || !NetworkInterface.GetIsNetworkAvailable())
 			return false;

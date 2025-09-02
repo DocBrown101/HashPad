@@ -59,8 +59,7 @@ public class HashViewModel : ObservableObject
 
 	internal async Task ComputeAsync(Stream stream, CancellationToken cancellationToken)
 	{
-		if (stream is null)
-			throw new ArgumentNullException(nameof(stream));
+		ArgumentNullException.ThrowIfNull(stream);
 
 		if (!IsTarget)
 			return;

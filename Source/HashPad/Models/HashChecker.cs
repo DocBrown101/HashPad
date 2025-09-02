@@ -10,14 +10,14 @@ internal class HashChecker
 {
 	public static async Task<string> ComputeHashAsync(string filePath, HashType type, CancellationToken cancellationToken)
 	{
-		using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-			return await ComputeHashAsync(fs, type, null, cancellationToken);
+		using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+		return await ComputeHashAsync(fs, type, null, cancellationToken);
 	}
 
 	public static async Task<string> ComputeHashAsync(Stream stream, HashType type, IProgress<StreamProgress> progress, CancellationToken cancellationToken)
 	{
-		using (var algorithm = type.GetAlgorithm())
-			return await ComputeHashAsync(stream, algorithm, progress, cancellationToken);
+		using var algorithm = type.GetAlgorithm();
+		return await ComputeHashAsync(stream, algorithm, progress, cancellationToken);
 	}
 
 	#region Base
@@ -59,7 +59,7 @@ internal class HashChecker
 			// closure of stream so as to make compute task stop with an ObjectDisposedException.
 			await Task.WhenAll(computeTask, progressTask);
 		}
-		catch (ObjectDisposedException ode) when ((uint)ode.HResult == COR_E_OBJECTDISPOSED)
+		catch (ObjectDisposedException ode) when ((uint)ode.HResult is COR_E_OBJECTDISPOSED)
 		{
 			throw new OperationCanceledException("Computing hash value is cancelled.", ode, cancellationToken);
 		}
