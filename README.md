@@ -50,6 +50,10 @@ To remove the shortcut of this app from `Send to` if you checked `Add to 'Send t
 
 ## History
 
+v2.14 2025-9-3
+
+ - Change UI
+
 v2.13 2025-8-17
 
  - Add support of SHA-3 (only on Windows 11 24H2)
