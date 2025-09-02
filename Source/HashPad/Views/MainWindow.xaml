@@ -64,7 +64,7 @@
 								BorderThickness="{TemplateBinding BorderThickness}"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								Background="{TemplateBinding Background}"
-								TextBlock.Foreground="{TemplateBinding Foreground}"
+								TextElement.Foreground="{TemplateBinding Foreground}"
 								SnapsToDevicePixels="True">
 							<ContentPresenter x:Name="contentPresenter"
 											  Margin="{TemplateBinding Padding}"
@@ -81,17 +81,17 @@
 							<Trigger Property="IsMouseOver" Value="True">
 								<Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
 								<Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
-								<Setter Property="TextBlock.Foreground" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+								<Setter Property="TextElement.Foreground" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
 							</Trigger>
 							<Trigger Property="IsPressed" Value="True">
 								<Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
 								<Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
-								<Setter Property="TextBlock.Foreground" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+								<Setter Property="TextElement.Foreground" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
 							</Trigger>
 							<Trigger Property="IsEnabled" Value="False">
 								<Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
 								<Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
-								<Setter Property="TextBlock.Foreground" TargetName="border" Value="{StaticResource Button.Disabled.Foreground}"/>
+								<Setter Property="TextElement.Foreground" TargetName="border" Value="{StaticResource Button.Disabled.Foreground}"/>
 							</Trigger>
 						</ControlTemplate.Triggers>
 					</ControlTemplate>
@@ -123,6 +123,49 @@
 								<Setter Property="Foreground" Value="{StaticResource Button.Disabled.Foreground}"/>
 							</Trigger>
 						</Style.Triggers>
+					</Style>
+
+					<Style x:Key="ToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+						<Setter Property="BorderThickness" Value="0"/>
+						<Setter Property="BorderBrush" Value="Transparent"/>
+						<Setter Property="Background" Value="Transparent"/>
+						<Setter Property="Foreground" Value="{StaticResource App.Foreground}"/>
+						<Setter Property="Padding" Value="10,1"/>
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="{x:Type ToggleButton}">
+									<Border x:Name="border"
+											BorderThickness="{TemplateBinding BorderThickness}"
+											BorderBrush="{TemplateBinding BorderBrush}"
+											Background="{TemplateBinding Background}"
+											TextElement.Foreground="{TemplateBinding Foreground}"
+											SnapsToDevicePixels="True">
+										<ContentPresenter x:Name="contentPresenter"
+														  Margin="{TemplateBinding Padding}"
+														  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+														  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+														  Content="{TemplateBinding Content}"
+														  ContentTemplate="{TemplateBinding ContentTemplate}"
+														  ContentStringFormat="{TemplateBinding ContentStringFormat}"
+														  Focusable="False"
+														  RecognizesAccessKey="True"
+														  SnapsToDevicePixels="True"/>
+									</Border>
+									<ControlTemplate.Triggers>
+										<Trigger Property="IsMouseOver" Value="True">
+											<Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+										</Trigger>
+										<Trigger Property="IsPressed" Value="True">
+											<Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+										</Trigger>
+										<Trigger Property="IsEnabled" Value="False">
+											<Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+											<Setter Property="TextElement.Foreground" TargetName="border" Value="{StaticResource Button.Disabled.Foreground}"/>
+										</Trigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
 					</Style>
 
 					<SolidColorBrush x:Key="CheckBox.Static.Border" Color="#FF707070"/>
@@ -221,6 +264,12 @@
 					</Style>
 				</ResourceDictionary>
 			</ResourceDictionary.MergedDictionaries>
+
+			<CollectionViewSource x:Key="HashesViewSource" Source="{Binding Hashes}">
+				<CollectionViewSource.GroupDescriptions>
+					<PropertyGroupDescription PropertyName="HashFunction"/>
+				</CollectionViewSource.GroupDescriptions>
+			</CollectionViewSource>
 		</ResourceDictionary>
 	</Window.Resources>
 
@@ -316,7 +365,7 @@
 					<ListBox Margin="0,6"
 							 HorizontalContentAlignment="Stretch"
 							 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-							 ItemsSource="{Binding Hashes}"
+							 ItemsSource="{Binding Source={StaticResource HashesViewSource}}"
 							 Background="{x:Null}">
 						<ListBox.Template>
 							<ControlTemplate TargetType="{x:Type ListBox}">
@@ -328,6 +377,39 @@
 								</Border>
 							</ControlTemplate>
 						</ListBox.Template>
+						<ListBox.GroupStyle>
+							<GroupStyle>
+								<GroupStyle.ContainerStyle>
+									<Style TargetType="{x:Type GroupItem}">
+										<Setter Property="Template">
+											<Setter.Value>
+												<ControlTemplate TargetType="{x:Type GroupItem}">
+													<Grid>
+														<Grid.RowDefinitions>
+															<RowDefinition Height="Auto"/>
+															<RowDefinition Height="Auto"/>
+														</Grid.RowDefinitions>
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="Auto"/>
+															<ColumnDefinition Width="*"/>
+														</Grid.ColumnDefinitions>
+
+														<ToggleButton Grid.Row="0"
+																	  x:Name="toggle"
+																	  Style="{StaticResource ToggleButtonStyle}"
+																	  FontWeight="Bold"
+																	  Content="{Binding Name, Mode=OneTime}"
+																	  controls:HashToggleButtonProperty.Items="{Binding Items}"/>
+														<ItemsPresenter Grid.Row="1" Grid.ColumnSpan="2"
+																		Visibility="{Binding ElementName=toggle, Path=IsChecked, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverterKey}}"/>
+													</Grid>
+												</ControlTemplate>
+											</Setter.Value>
+										</Setter>
+									</Style>
+								</GroupStyle.ContainerStyle>
+							</GroupStyle>
+						</ListBox.GroupStyle>
 						<ListBox.ItemTemplate>
 							<DataTemplate>
 								<StackPanel>
@@ -335,7 +417,7 @@
 												Orientation="Horizontal">
 										<CheckBox Margin="0,5,5,5" VerticalAlignment="Center"
 												  Style="{StaticResource HashCheckBoxStyle}"
-												  Content="{Binding Name, Mode=OneTime}"
+												  Content="{Binding HashName, Mode=OneTime}"
 												  IsEnabled="{Binding IsReading, Mode=OneWay, Converter={StaticResource BooleanInverseConverterKey}}"
 												  IsChecked="{Binding IsTarget, Mode=TwoWay}"/>
 										<Grid Background="{StaticResource Match.Background}"

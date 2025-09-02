@@ -13,7 +13,8 @@ public class HashViewModel : ObservableObject
 	#region Property
 
 	public HashType HashType { get; }
-	public string Name => HashType.ToString().Replace("Sha", "SHA-").Replace('_', '-').ToUpper();
+	public string HashName => HashType.ToNameString();
+	public string HashFunction => HashType.ToFunctionString();
 
 	public string HashValue
 	{
@@ -58,8 +59,7 @@ public class HashViewModel : ObservableObject
 
 	internal async Task ComputeAsync(Stream stream, CancellationToken cancellationToken)
 	{
-		if (stream is null)
-			throw new ArgumentNullException(nameof(stream));
+		ArgumentNullException.ThrowIfNull(stream);
 
 		if (!IsTarget)
 			return;

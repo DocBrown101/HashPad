@@ -115,7 +115,7 @@ public class MainWindowViewModel : ObservableObject
 
 	public IReadOnlyCollection<HashViewModel> Hashes { get; }
 
-	public Settings Settings { get; } = new Settings();
+	public Settings Settings { get; } = new();
 
 	public MainWindowViewModel() : this(EnumerateHashTypes().ToArray())
 	{ }

@@ -259,7 +259,7 @@ internal static class WindowHelper
 			monitorHandle,
 			MONITOR_DPI_TYPE.MDT_Default,
 			out uint dpiX,
-			out uint dpiY) == S_OK)
+			out uint dpiY) is S_OK)
 		{
 			dpi = new DpiScale(dpiX / DefaultPixelsPerInch, dpiY / DefaultPixelsPerInch);
 			return true;

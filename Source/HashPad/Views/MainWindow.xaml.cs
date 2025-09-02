@@ -144,7 +144,7 @@ public partial class MainWindow : Window
 		this.Close();
 	}
 
-	private void SetCulture(string cultureName)
+	private static void SetCulture(string cultureName)
 	{
 		var culture = System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.AllCultures)
 			.FirstOrDefault(x => x.Name == cultureName);

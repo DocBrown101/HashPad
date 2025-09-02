@@ -19,6 +19,27 @@ public enum HashType
 
 internal static class HashTypeHelper
 {
+	public static string ToNameString(this HashType type)
+	{
+		return type.ToString().Replace("Sha", "SHA-").Replace('_', '-').ToUpper();
+	}
+
+	public static string ToFunctionString(this HashType type)
+	{
+		return type switch
+		{
+			HashType.Md5 => "MD5",
+			HashType.Sha1 => "SHA-1",
+			HashType.Sha2_256 or
+			HashType.Sha2_384 or
+			HashType.Sha2_512 => "SHA-2",
+			HashType.Sha3_256 or
+			HashType.Sha3_384 or
+			HashType.Sha3_512 => "SHA-3",
+			_ => throw new NotSupportedException() // HashType.None
+		};
+	}
+
 	public static HashAlgorithm GetAlgorithm(this HashType type)
 	{
 		return type switch
