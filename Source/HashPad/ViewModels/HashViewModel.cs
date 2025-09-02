@@ -13,7 +13,8 @@ public class HashViewModel : ObservableObject
 	#region Property
 
 	public HashType HashType { get; }
-	public string Name => HashType.ToString().Replace("Sha", "SHA-").Replace('_', '-').ToUpper();
+	public string HashName => HashType.ToNameString();
+	public string HashFunction => HashType.ToFunctionString();
 
 	public string HashValue
 	{
