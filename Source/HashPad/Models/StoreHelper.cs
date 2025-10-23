@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using Windows.Networking.Connectivity;
 using Windows.Services.Store;
 using WinRT.Interop;
 
@@ -21,6 +23,11 @@ internal static class StoreHelper
 	public static async Task<bool> CheckUpdateAsync()
 	{
 		if (!PlatformInfo.IsPackaged || !NetworkInterface.GetIsNetworkAvailable())
+			return false;
+
+		var cost = NetworkInformation.GetInternetConnectionProfile()?.GetConnectionCost();
+		Debug.WriteLine($"COST {cost.NetworkCostType}");
+		if (cost is not { NetworkCostType: NetworkCostType.Unrestricted })
 			return false;
 
 		var context = StoreContext.GetDefault();
